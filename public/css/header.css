@@ -1,0 +1,65 @@
+.welcome {
+    font-weight: bold;
+    font-size: 50px;
+    opacity: 0;
+    transform: translate(-50px, 0) rotate(15deg);
+    transition: 2s;
+}
+
+.showWelcome {
+    opacity: 1;
+    transform: translate(0,0);
+}
+
+.welcome2 {
+    font-weight: bold;
+    font-size: 50px;
+    opacity: 0;
+    transform: translate(-50px, 0) rotate(15deg);
+    transition: 2s;
+}
+
+.showWelcome2 {
+    opacity: 1;
+    transform: translate(0,0);
+}
+
+.subwelcome{
+    margin-top: 10px;
+    font-size: 33px;
+    opacity: 0;
+    transform: translate(50px, 0) rotate(15deg);
+    transition: 2s;
+}
+
+.showsubWelcome {
+    opacity: 1;
+    transform: translate(0,0);
+    text-decoration: underline;
+}
+
+.rotate {
+    transform: rotate(0deg);
+    transition: 0.5s;
+}
+
+.rotate-clicked{
+    transform: rotate(90deg)
+}
+
+@media screen and (max-width: 768px){
+    .welcome{
+        margin-left: 0;
+        font-size: 28px;
+    }
+
+    .welcome2{
+        margin-left: 0;
+        font-size: 28px;
+    }
+
+    .subwelcome{
+        margin-left: 0;
+        font-size: 18px;
+    }
+}
