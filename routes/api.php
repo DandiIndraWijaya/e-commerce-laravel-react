@@ -32,6 +32,9 @@ Route::group([
     });
 });
 
+Route::post('/shopping_cart', 'App\Http\Controllers\ShoppingCartController@store')->middleware('auth:api');
+Route::get('/shopping_cart/{user_id}', 'App\Http\Controllers\ShoppingCartController@get')->middleware('auth:api');
+
 Route::get('/products/category/{category}', 'App\Http\Controllers\ProductsController@show');
 Route::get('/product/{product_name}', 'App\Http\Controllers\ProductsController@product');
 

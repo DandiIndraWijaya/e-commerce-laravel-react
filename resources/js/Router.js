@@ -6,6 +6,7 @@ import Login from './views/Login/Login';
 import Products from './views/Products';
 import Register from './views/Register/Register';
 import ProductDetail from './views/productDetail';
+import MyShoppingCart from './views/MyShoppingCart';
 
 // import NotFound from './views/NotFound/NotFound'
 // User is LoggedIn
@@ -20,6 +21,7 @@ const Main = props => (
   <Route path='/register' component={Register}/>
   {/* User is LoggedIn*/}
   <PrivateRoute path='/dashboard' component={Dashboard}/>
+  <PrivateRoute path='/my_shopping_cart' component={MyShoppingCart} />
   {/*Page Not Found*/}
   {/* <Route component={NotFound}/> */}
 

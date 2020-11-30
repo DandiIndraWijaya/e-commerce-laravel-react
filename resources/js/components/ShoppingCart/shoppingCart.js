@@ -32,7 +32,7 @@ const StyledChart = styled.span`
     }
 `;
 
-function ShoppingCart({ children, stock, quantity, price, userEmail, productId }) {
+function ShoppingCart({ children, stock, quantity, price, userId, productId, userAccessToken }) {
     const [quan, setQuantity] = useState(1);
     const [pric, setPrice] = useState(null);
     const [click, setClick] = useState(false);
@@ -47,22 +47,22 @@ function ShoppingCart({ children, stock, quantity, price, userEmail, productId }
     const handleOnClick = () => {
         setClick(true);
         let formData = new FormData();
-        formData.append('email', userEmail);
+        formData.append('user_id', userId);
         formData.append('product_id', productId);
         formData.append('quantity', quantity);
         formData.append('stock', stock - quantity);
 
-        fetch('http://127.0.0.1:8000/api/shopping_cart/',
+        fetch('/api/shopping_cart/',
             {
                 body: formData,
-                method: "post"
+                method: "post",
+                headers: {
+                    'Authorization' : 'Bearer '+ userAccessToken
+                }
             })
             .then(res => {
-                console.log(res);
-                window.location.href = 'http://127.0.0.1:8000/my_shopping_cart';
                 setClick(false);
-
-
+                history.push('/my_shopping_cart');
             })
     }
 

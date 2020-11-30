@@ -15,11 +15,12 @@
 <body style="background: #f3f3f3">
 
 <div class="container-fluid mt-5">
+    
     <div class="row">
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h3>ORIGIN</h3>
+                    <h3>ORIGIN {{ $user_name }}</h3>
                     <hr>
                     <div class="form-group">
                         <label class="font-weight-bold">PROVINSI ASAL</label>

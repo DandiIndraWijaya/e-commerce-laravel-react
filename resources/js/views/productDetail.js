@@ -70,8 +70,8 @@ const ProductDetail = () => {
     const [price, setPrice] = useState(0);
     const [productId, setProductId] = useState(0);
     const [stock, setStock] = useState(0);
-    const [userEmail, setUserEmail] = useState('');
-
+    const [userId, setUserId] = useState(0);
+    const [userAccessToken, setUserAccessToken] = useState('')
     const { productName } = useParams();
 
     const checkIncr = () => {
@@ -129,7 +129,8 @@ const ProductDetail = () => {
         let state = localStorage["appState"];
         if (state) {
           let AppState = JSON.parse(state);
-          setUserEmail(AppState.user.email);
+          setUserId(AppState.user.id);
+          setUserAccessToken(AppState.user.access_token);
         } 
         axios.get(`/api/product/${productName}`).then(response => {
             const product = response.data;
@@ -150,29 +151,6 @@ const ProductDetail = () => {
         });
         
     }, []);
-    const fetchItems = async (id) => {
-        
-        const data = await fetch(
-            'http://127.0.0.1:8000/api/product/' + id
-        );
-
-        const product = await data.json();
-       
-        let im = [];
-        product.image.map((img, key) => {
-            im.push(img) 
-        })
-        setImage(im);
-        setProduct(product);
-        setRating(product.rating);
-        setUsersRated(product.users_rated);
-        setPrice(product.price);
-        setProductId(product.id);
-        setStock(product.quantity);
-        if(product.quantity === 0){
-            setClicks(0);
-        }
-    }
 
     const responsive = {
         superLargeDesktop: {
@@ -317,8 +295,8 @@ const ProductDetail = () => {
                 </Card>
             </div>
             {
-                userEmail === 0 &&
-                <NotLoginYet /> || <ShoppingCart stock={stock} productId={productId} userEmail={userEmail} quantity={clicks} price={product.price} />
+                userId === 0 &&
+                <NotLoginYet /> || <ShoppingCart userAccessToken={userAccessToken} stock={stock} productId={productId} userId={userId} quantity={clicks} price={product.price} />
             }
         </div>
         

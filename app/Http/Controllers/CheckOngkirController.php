@@ -6,13 +6,15 @@ use App\Models\City;
 use App\Models\Province;
 use Illuminate\Http\Request;
 use Kavist\RajaOngkir\Facades\RajaOngkir;
+use Auth;
 
 class CheckOngkirController extends Controller
 {
     public function index()
     {
         $provinces = Province::pluck('name', 'province_id');
-        return view('ongkir', compact('provinces'));
+        $user_name = Auth::user();
+        return view('ongkir', compact('provinces', 'user_name'));
     }
 
     public function getCities($id)
