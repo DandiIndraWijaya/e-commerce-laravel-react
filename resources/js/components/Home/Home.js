@@ -45,13 +45,15 @@ const Home = () => {
     const [user, setUser] = useState({});
 
     useEffect(() => {
-      let state = localStorage["appState"];
-      if (state) {
-        let AppState = JSON.parse(state);
-        setIsLoggedId(AppState.isLoggedIn);
-        setUser(AppState.user);
-        // this.setState({ isLoggedIn: AppState.isLoggedIn, user: AppState.user });
-      }
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        let state = localStorage["appState"];
+        if (state) {
+            let AppState = JSON.parse(state);
+            setIsLoggedId(AppState.isLoggedIn);
+            setUser(AppState.user);
+            // this.setState({ isLoggedIn: AppState.isLoggedIn, user: AppState.user });
+        }
     }, []);
     return (
         <div>

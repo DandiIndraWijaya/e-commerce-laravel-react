@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from "styled-components";
 import media from "styled-media-query";
 import Grid from '@material-ui/core/Grid';
@@ -25,9 +25,9 @@ const StyledContainer = styled.div`
 `;
 
 
-
 const Header = ({userName}) => {
-    window.addEventListener('load', () => {
+
+    useEffect(() => {
         let welcome = document.querySelector('.welcome');
         
         let subwelcome = document.querySelector('.subwelcome');
@@ -37,7 +37,7 @@ const Header = ({userName}) => {
         }
         welcome.classList.add('showWelcome');
         subwelcome.classList.add('showsubWelcome');
-    })
+    }, []);
 
     return (
         <StyledHeader>

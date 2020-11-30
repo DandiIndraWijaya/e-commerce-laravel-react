@@ -103,7 +103,7 @@ handleName(e) {
   let value = e.target.value;
   this.setState(prevState => ({
     user: {
-      ...prevState.user, first_name: value
+      ...prevState.user, name: value
     }
   }));
 }

@@ -68,6 +68,8 @@ const Products = () => {
       };
     
     useEffect(() => {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
         axios.get(`/api/products/category/${category}`).then(response => {
             setItems(response.data)
           });

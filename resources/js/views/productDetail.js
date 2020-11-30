@@ -124,6 +124,8 @@ const ProductDetail = () => {
   })
 
     useEffect(() => {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
         let state = localStorage["appState"];
         if (state) {
           let AppState = JSON.parse(state);
