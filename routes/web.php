@@ -23,3 +23,8 @@ Route::view('/{path?}', 'index');
 
 Route::view('/products/{path?}', 'index');
 Route::view('/product/{path?}', 'index');
+
+
+Route::get('/shopping_cart/ongkir', 'App\Http\Controllers\CheckOngkirController@index');
+Route::post('/shopping_cart/ongkir', 'App\Http\Controllers\CheckOngkirController@check_ongkir');
+Route::get('/shopping_cart/cities/{province_id}', 'App\Http\Controllers\CheckOngkirController@getCities');
