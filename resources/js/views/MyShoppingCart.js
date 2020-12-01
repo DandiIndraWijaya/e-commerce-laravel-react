@@ -156,20 +156,20 @@ const MyShoppingCart = () => {
                                             
                                         </Grid>
                                     </Grid>
-                                    <div style={{ backgroundColor: ' #17172b', padding: '2px' }}>
-                                        <center>
-                                            <h3 style={{ color: 'grey' }}>
-                                                <a style={{ color: 'grey', cursor: 'pointer' }} href={`http://127.0.0.1:8000/purchase/${cart.cart_id}/price/${cart.price * cart.quantity}`}>Buy <LocalMallIcon /> </a> 
-                                                or 
-                                                <a style={{ color: 'grey' }} href={`http://127.0.0.1:8000/my_shopping_cart/delete/${cart.cart_id}`} > Remove</a>
-                                            </h3>
-                                        </center>
-                                    </div>
                                 </Card>
                                 </div>
                             )
                         })
                     }
+                    <div style={{ backgroundColor: ' #17172b', padding: '2px' }}>
+                        <center>
+                            <h3 style={{ color: 'grey' }}>
+                                <a style={{ color: 'grey', cursor: 'pointer' }} href="#">Buy <LocalMallIcon /> </a> 
+                                                or 
+                                <a style={{ color: 'grey' }} href="#" > Remove</a>
+                            </h3>
+                        </center>
+                    </div>
                 </StyledCart>
             </div>
         </div>

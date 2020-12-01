@@ -16,21 +16,34 @@ class ShoppingCartController extends Controller
     }
 
     public function store(Request $request){
-        $shopping_cart = new ShoppingCart;
-        $shopping_cart->user_id = $request->input('user_id');
-        $shopping_cart->product_id = $request->input('product_id');
-        $shopping_cart->quantity = $request->input('quantity');
-        $save = $shopping_cart->save();
+
+        $check_cart = ShoppingCart::where('user_id', $request->input('user_id'))->where('product_id', $request->input('product_id'))->first();
+
+        if(empty($check_cart)){
+            $shopping_cart = new ShoppingCart;
+            $shopping_cart->user_id = $request->input('user_id');
+            $shopping_cart->product_id = $request->input('product_id');
+            $shopping_cart->quantity = $request->input('quantity');
+            $save = $shopping_cart->save();
+        }else{
+            $shopping_cart = $check_cart;
+            $shopping_cart->quantity += $request->input('quantity');
+            $shopping_cart->save();
+            // DB::table('shopping_cart')
+            //   ->where('user_id', $request->input('user_id'))
+            //   ->where('product_id', $request->input('product_id'))
+            //   ->update(['quantity' => 'quantity' + $request->input('quantity')]);
+        }
 
         DB::table('products')
               ->where('id', $request->input('product_id'))
               ->update(['quantity' => $request->input('stock')]);
         
-        return response()->json($save, 201);
+        return response()->json($shopping_cart, 201);
     }
 
     public function get($user_id){
-        $shopping_cart = ShoppingCart::select('shopping_cart.id as cart_id', 'products.id as product_id', 'shopping_cart.quantity as quantity', 'price')->join('products', 'products.id', '=', 'shopping_cart.product_id')->where('user_id', $user_id)->get();
+        $shopping_cart = ShoppingCart::select('shopping_cart.id as cart_id','products.name as name' ,'products.id as product_id', 'shopping_cart.quantity as quantity', 'price')->join('products', 'products.id', '=', 'shopping_cart.product_id')->where('user_id', $user_id)->get();
 
 
         foreach($shopping_cart as $cart){
