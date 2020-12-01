@@ -7,6 +7,7 @@ import styled from "styled-components";
 import CardMedia from '@material-ui/core/CardMedia';
 import {currencyFormatter} from '../utils/currency';
 import LocalMallIcon from '@material-ui/icons/LocalMall';
+import AddIcon from '@material-ui/icons/Add';
 import { Link, withRouter, useParams } from 'react-router-dom';
 
 import Navbar from '../components/Navigation/navbar';
@@ -163,13 +164,21 @@ const MyShoppingCart = () => {
                     }
                     <div style={{ backgroundColor: ' #17172b', padding: '2px' }}>
                         <center>
-                            <h3 style={{ color: 'grey' }}>
-                                <a style={{ color: 'grey', cursor: 'pointer' }} href="#">Buy <LocalMallIcon /> </a> 
-                                                or 
-                                <a style={{ color: 'grey' }} href="#" > Remove</a>
+                            <h3 style={{ color: 'grey', marginTop: '10px' }}>
+                                <a style={{ color: 'grey', cursor: 'pointer' }} href="#"><AddIcon /> Add A Destination Address</a> 
                             </h3>
                         </center>
                     </div>
+                    <br />
+                    {/* <div style={{ backgroundColor: ' #17172b', padding: '2px' }}>
+                        <center>
+                            <h3 style={{ color: 'grey' }}>
+                                <a style={{ color: 'grey', cursor: 'pointer' }} href="#">Buy <LocalMallIcon /> </a> 
+                                    or 
+                                <a style={{ color: 'grey' }} href="#" > Remove</a>
+                            </h3>
+                        </center>
+                    </div> */}
                 </StyledCart>
             </div>
         </div>
