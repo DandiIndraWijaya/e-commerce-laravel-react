@@ -127,8 +127,8 @@ const ProductDetail = () => {
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
         let state = localStorage["appState"];
-        if (state) {
-          let AppState = JSON.parse(state);
+        let AppState = JSON.parse(state);
+        if (AppState.isLoggedIn === true) {
           setUserId(AppState.user.id);
           setUserAccessToken(AppState.user.access_token);
         } 
@@ -301,6 +301,7 @@ const ProductDetail = () => {
         </div>
         
     )
+    
 }
 
 

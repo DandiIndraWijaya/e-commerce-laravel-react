@@ -4,10 +4,12 @@ import ToolBar from '@material-ui/core/Toolbar';
 import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import {Link, withRouter} from 'react-router-dom';
+import {Link, withRouter, useHistory} from 'react-router-dom';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+
 import Login from '../../views/Login/Login'
 
 const StyledLogo = styled.span`
@@ -48,6 +50,8 @@ const Navbar = () => {
     const [isLoggedIn, setIsLoggedId] = useState(false);
     const [user, setUser] = useState({});
     const [open, setOpen] = useState(false);
+    const [carts, setCarts] = useState({});
+    const history = useHistory();
 
   const handleOpen = () => {
     setOpen(true);
@@ -59,12 +63,19 @@ const Navbar = () => {
 
     useEffect(() => {
         let state = localStorage["appState"];
-        if (state) {
-          let AppState = JSON.parse(state);
+        let AppState = JSON.parse(state);
+        if (AppState.isLoggedIn === true) {
           setIsLoggedId(AppState.isLoggedIn);
           setUser(AppState.user);
           // this.setState({ isLoggedIn: AppState.isLoggedIn, user: AppState.user });
+          axios.get(`/api/shopping_cart/${AppState.user.id}`, {
+            headers: { 'Authorization' : 'Bearer '+ AppState.user.access_token}
+          }).then(response => {
+              const cartData = response.data;
+              setCarts(cartData);
+          });
         }
+        
       }, []);
 
     const logout = () => {
@@ -75,7 +86,7 @@ const Navbar = () => {
               user: {}
             };
             localStorage["appState"] = JSON.stringify(appState);
-            location.reload()
+            history.push('/');
           });
         
     }
@@ -84,11 +95,21 @@ const Navbar = () => {
       <div>
         <AppBar style={{ background: `linear-gradient(105deg, #17172b, #ffffff)` }} position="fixed">
                 <ToolBar >
-                    <StyledLogo className={classes.title}> 
+                    <StyledLogo className={classes.title}>
+                      <Link to="/" style={{ textDecoration: 'none', color: 'white' }}>
                         Ecommerce
+                      </Link> 
                     </StyledLogo>
                     {
-                        !isLoggedIn ? <Button onClick={handleOpen} color="default">Login</Button> : <Button color="default" onClick={logout}>Logout</Button>
+                        !isLoggedIn ? <Button onClick={handleOpen} color="default">Login</Button> : 
+                        <div>
+                          <Link to="/my_shopping_cart" style={{ textDecoration: 'none'}}>
+                            <Button color="default" >
+                              <ShoppingCartIcon />({carts.length})
+                            </Button>
+                          </Link>
+                          <Button color="default" onClick={logout}>Logout</Button>
+                        </div>
                     }
                 </ToolBar>
           </AppBar>

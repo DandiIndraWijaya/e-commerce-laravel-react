@@ -6,10 +6,14 @@ import Carousel from "react-multi-carousel";
 import styled from "styled-components";
 import CardMedia from '@material-ui/core/CardMedia';
 import {currencyFormatter} from '../utils/currency';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
 import LocalMallIcon from '@material-ui/icons/LocalMall';
 import AddIcon from '@material-ui/icons/Add';
 import { Link, withRouter, useParams } from 'react-router-dom';
 
+import AddAddress from './AddAddress'
 import Navbar from '../components/Navigation/navbar';
 
 const StyledCarousel = styled.div`
@@ -48,7 +52,16 @@ const useStyles = makeStyles({
 const MyShoppingCart = () => {
     const [carts, setCarts] = useState([]);
     const [user, setUser] = useState({});
+    const [open, setOpen] = useState(false);
     const classes = useStyles();
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
+    
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     useEffect(() => {
         document.body.scrollTop = 0;
@@ -165,7 +178,7 @@ const MyShoppingCart = () => {
                     <div style={{ backgroundColor: ' #17172b', padding: '2px' }}>
                         <center>
                             <h3 style={{ color: 'grey', marginTop: '10px' }}>
-                                <a style={{ color: 'grey', cursor: 'pointer' }} href="#"><AddIcon /> Add A Destination Address</a> 
+                                <a style={{ color: 'grey', cursor: 'pointer' }} onClick={handleOpen}><AddIcon /> Add A Destination Address</a> 
                             </h3>
                         </center>
                     </div>
@@ -181,6 +194,24 @@ const MyShoppingCart = () => {
                     </div> */}
                 </StyledCart>
             </div>
+            <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={open}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+                timeout: 500,
+            }}
+            >
+            <Fade in={open}>
+                <div className={classes.paper}>
+                <AddAddress />
+                </div>
+            </Fade>
+            </Modal>
         </div>
     )
 }
