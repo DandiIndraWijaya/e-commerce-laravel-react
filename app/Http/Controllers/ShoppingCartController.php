@@ -43,8 +43,12 @@ class ShoppingCartController extends Controller
     }
 
     public function get($user_id){
-        $shopping_cart = ShoppingCart::select('shopping_cart.id as cart_id','products.name as name' ,'products.id as product_id', 'shopping_cart.quantity as quantity', 'price')->join('products', 'products.id', '=', 'shopping_cart.product_id')->where('user_id', $user_id)->get();
+        $shopping_cart = ShoppingCart::select('shopping_cart.id as cart_id','products.name as name' ,'products.id as product_id', 'shopping_cart.quantity as quantity', 'price', 'weight')->join('products', 'products.id', '=', 'shopping_cart.product_id')->where('user_id', $user_id)->get();
 
+        foreach($shopping_cart as $product){
+            $product_weight = $product->quantity * $product->weight;
+            $product->weight = $product_weight;
+        }
 
         foreach($shopping_cart as $cart){
             $images = ProductImage::select('image')->where('product_id', $cart->product_id)->get();

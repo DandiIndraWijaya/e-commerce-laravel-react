@@ -43,9 +43,10 @@ const StyledCart = styled.div`
 const useStyles = makeStyles({
     root: {
       maxWidth: 345,
+      maxHeight: 250
     },
     media: {
-      height: 210,
+      height: 250,
     },
   });
 
@@ -53,6 +54,7 @@ const MyShoppingCart = () => {
     const [carts, setCarts] = useState([]);
     const [user, setUser] = useState({});
     const [open, setOpen] = useState(false);
+    const [userAddress, setUserAddress] = useState([]);
     const classes = useStyles();
 
     const handleOpen = () => {
@@ -77,6 +79,13 @@ const MyShoppingCart = () => {
         }).then(response => {
             const cartData = response.data;
             setCarts(cartData);
+            
+            if(cartData.length > 0){
+                axios.get(`/api/user_address/${AppState.user.id}`)
+                .then(response => {
+                    setUserAddress(response.data);
+                })
+            }
         });
 
     },[]);
@@ -166,6 +175,15 @@ const MyShoppingCart = () => {
                                                     <h4 style={{ marginLeft: '50px'}}>{currencyFormatter(cart.price * cart.quantity)}</h4>
                                                 </Grid>
                                             </Grid>
+                                            <hr></hr>
+                                            <Grid container>
+                                                <Grid item xs={4} sm={4} md={4} lg={4}>
+                                                    <div style={{ marginLeft: '20px'}}><StyledText>Total Weight</StyledText></div>
+                                                </Grid>
+                                                <Grid item xs={8} sm={8} md={8} lg={8}>
+                                                    <h4 style={{ marginLeft: '50px'}}>{cart.weight} gram</h4>
+                                                </Grid>
+                                            </Grid>
                                             </div>
                                             
                                         </Grid>
@@ -182,6 +200,53 @@ const MyShoppingCart = () => {
                             </h3>
                         </center>
                     </div>
+                    
+                    {
+                        userAddress.map((list, key) => {
+                            return (
+                                <div key={key} style={{ marginTop: '20px'}}>
+                                    <Card style={{ padding: '10px' }}>
+                                        <Grid container>
+                                            <Grid item xs={1} sm={1} md={1} lg={1}>
+                                                <center>-</center>
+                                            </Grid>
+                                            <Grid item xs={11} sm={11} md={11} lg={11}>
+                                                <Grid container>
+                                                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                                                    <h5>
+                                                    {list.address}, {list.RT_RW}
+                                                    </h5>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                                                    <h5>
+                                                        {list.kelurahan_desa}, {list.kecamatan}, {list.provinsi}
+                                                    </h5>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                                                    <h5>
+                                                        Postal Code: {list.postal_code}
+                                                    </h5>
+                                                    </Grid>
+
+                                                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                                                    <h5>
+                                                        Phone Number: {list.phone_number}
+                                                    </h5>
+                                                    </Grid>
+                                                </Grid>
+                                            
+                                            
+                                            
+                                           
+                                            </Grid>
+                                        </Grid>
+                                    </Card>
+                                </div>
+                            )
+                        })
+                    }
                     <br />
                     {/* <div style={{ backgroundColor: ' #17172b', padding: '2px' }}>
                         <center>
