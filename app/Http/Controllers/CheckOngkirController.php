@@ -25,13 +25,26 @@ class CheckOngkirController extends Controller
 
     public function check_ongkir(Request $request)
     {
-        $cost = RajaOngkir::ongkosKirim([
-            'origin'        => $request->city_origin, // ID kota/kabupaten asal
+        $cost[0]= RajaOngkir::ongkosKirim([
+            'origin'        => 105, // ID kota/kabupaten asal
             'destination'   => $request->city_destination, // ID kota/kabupaten tujuan
             'weight'        => $request->weight, // berat barang dalam gram
-            'courier'       => $request->courier // kode kurir pengiriman: ['jne', 'tiki', 'pos'] untuk starter
+            'courier'       => 'jne'// kode kurir pengiriman: ['jne', 'tiki', 'pos'] untuk starter
+        ])->get();
+        
+        $cost[1]= RajaOngkir::ongkosKirim([
+            'origin'        => 105, // ID kota/kabupaten asal
+            'destination'   => $request->city_destination, // ID kota/kabupaten tujuan
+            'weight'        => $request->weight, // berat barang dalam gram
+            'courier'       => 'tiki'// kode kurir pengiriman: ['jne', 'tiki', 'pos'] untuk starter
         ])->get();
 
+        $cost[1]= RajaOngkir::ongkosKirim([
+            'origin'        => 105, // ID kota/kabupaten asal
+            'destination'   => $request->city_destination, // ID kota/kabupaten tujuan
+            'weight'        => $request->weight, // berat barang dalam gram
+            'courier'       => 'pos'// kode kurir pengiriman: ['jne', 'tiki', 'pos'] untuk starter
+        ])->get();
 
         return response()->json($cost);
     }

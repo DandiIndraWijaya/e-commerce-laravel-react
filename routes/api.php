@@ -42,3 +42,4 @@ Route::post('/shopping_cart', 'App\Http\Controllers\ShoppingCartController@store
 Route::get('/shopping_cart/{user_email}', 'App\Http\Controllers\ShoppingCartController@get');
 
 Route::get('/user_address/{user_id}', 'App\Http\Controllers\UserController@get_address');
+Route::post('/check_ongkir', 'App\Http\Controllers\CheckOngkirController@check_ongkir');

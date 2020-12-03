@@ -9,9 +9,16 @@ import {currencyFormatter} from '../utils/currency';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import LocalMallIcon from '@material-ui/icons/LocalMall';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import AddIcon from '@material-ui/icons/Add';
 import { Link, withRouter, useParams } from 'react-router-dom';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Button from '../components/Button/Button';
 
 import AddAddress from './AddAddress'
 import Navbar from '../components/Navigation/navbar';
@@ -40,7 +47,14 @@ const StyledCart = styled.div`
     }
 `;
 
-const useStyles = makeStyles({
+const SetyledAddress  = styled.div`
+    &:hover{
+        cursor: pointer;
+        text-decoration: underline;
+    }
+`;
+
+const useStyles = makeStyles(theme =>({
     root: {
       maxWidth: 345,
       maxHeight: 250
@@ -48,14 +62,29 @@ const useStyles = makeStyles({
     media: {
       height: 250,
     },
-  });
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+      },
+      selectEmpty: {
+        marginTop: theme.spacing(2),
+      },
+  }));
 
 const MyShoppingCart = () => {
     const [carts, setCarts] = useState([]);
     const [user, setUser] = useState({});
     const [open, setOpen] = useState(false);
     const [userAddress, setUserAddress] = useState([]);
+    const [addressId, setAddressId] = useState(0);
     const classes = useStyles();
+    const [courier, setCourier] = useState('jne');
+    const [weight, setWeight] = useState(0);
+    const [cityId, setCityId] = useState(0)
+
+    const handleChange = (event) => {
+        setCourier(event.target.value);
+    };
 
     const handleOpen = () => {
         setOpen(true);
@@ -64,6 +93,18 @@ const MyShoppingCart = () => {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const handleOnCheck = () => {
+        axios.post(`/api/check_ongkir`, {
+            headers: { 'Authorization' : 'Bearer '+ user.access_token},
+            city_destination: cityId,
+            courier: courier,
+            weight: weight
+        })
+        .then(response => {
+            console.log(response.data[0])
+        })
+    }
 
     useEffect(() => {
         document.body.scrollTop = 0;
@@ -79,11 +120,20 @@ const MyShoppingCart = () => {
         }).then(response => {
             const cartData = response.data;
             setCarts(cartData);
-            
+
+            let weightData = 0;
+            cartData.map(data => {
+                weightData += data.weight;
+            })
+
+            setWeight(weightData);
+
             if(cartData.length > 0){
                 axios.get(`/api/user_address/${AppState.user.id}`)
                 .then(response => {
                     setUserAddress(response.data);
+                    setAddressId(response.data[0].id);
+                    setCityId(response.data[0].user_city_id);
                 })
             }
         });
@@ -204,11 +254,21 @@ const MyShoppingCart = () => {
                     {
                         userAddress.map((list, key) => {
                             return (
-                                <div key={key} style={{ marginTop: '20px'}}>
-                                    <Card style={{ padding: '10px' }}>
+                                    <div key={key} style={{ marginTop: '20px'}}>
+                                         <Card style={{ padding: '10px' }} onClick={() => {
+                                        setAddressId(list.id);
+                                        setCityId(list.user_city_id);
+                                    }}>
+                                        <SetyledAddress >
                                         <Grid container>
                                             <Grid item xs={1} sm={1} md={1} lg={1}>
-                                                <center>-</center>
+                                                {
+                                                    list.id === addressId &&
+                                                    <center><CheckCircleIcon /></center>
+                                                    ||
+                                                    <center><CheckBoxOutlineBlankIcon /></center>
+                                                }
+                                               
                                             </Grid>
                                             <Grid item xs={11} sm={11} md={11} lg={11}>
                                                 <Grid container>
@@ -237,17 +297,41 @@ const MyShoppingCart = () => {
                                                     </Grid>
                                                 </Grid>
                                             
-                                            
-                                            
-                                           
                                             </Grid>
                                         </Grid>
+                                        </SetyledAddress >
                                     </Card>
-                                </div>
+                                    </div>
                             )
                         })
                     }
-                    <br />
+
+                    <Grid container>
+                        <Grid item xs={3} sm={3} lg={3} md={3}>
+                            <FormControl className={classes.formControl}>
+                            <InputLabel shrink id="demo-simple-select-placeholder-label-label">
+                            Courier
+                            </InputLabel>
+                            <Select
+                            labelId="demo-simple-select-placeholder-label-label"
+                            id="demo-simple-select-placeholder-label"
+                            value={courier}
+                            onChange={handleChange}
+                            displayEmpty
+                            className={classes.selectEmpty}
+                            >
+                            <MenuItem value="jne">JNE</MenuItem>
+                            <MenuItem value="tiki">TIKI</MenuItem>
+                            <MenuItem value="post">POST</MenuItem>
+                            </Select>
+                        </FormControl>
+                        </Grid>
+                        <Grid item xs={9} sm={9} lg={9} md={9}>
+                            <br />
+                            <a style={{color: '#17172b', cursor: 'pointer'}} onClick={handleOnCheck}><h4>Check</h4></a>
+                        </Grid>
+                    </Grid>
+                    
                     {/* <div style={{ backgroundColor: ' #17172b', padding: '2px' }}>
                         <center>
                             <h3 style={{ color: 'grey' }}>
