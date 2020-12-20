@@ -15,10 +15,9 @@ import AddIcon from '@material-ui/icons/Add';
 import { Link, withRouter, useParams } from 'react-router-dom';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import Button from '../components/Button/Button';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 import AddAddress from './AddAddress'
 import Navbar from '../components/Navigation/navbar';
@@ -51,6 +50,13 @@ const SetyledAddress  = styled.div`
     &:hover{
         cursor: pointer;
         text-decoration: underline;
+    }
+`;
+
+const StyledDelete = styled.div`
+    color: red;
+    &:hover{
+        cursor: pointer;
     }
 `;
 
@@ -102,8 +108,14 @@ const MyShoppingCart = () => {
             weight: weight
         })
         .then(response => {
+            
             console.log(response.data[0])
         })
+    }
+
+    function deleteItem(e){
+        console.log(carts)
+        console.log(e);
     }
 
     useEffect(() => {
@@ -203,8 +215,27 @@ const MyShoppingCart = () => {
                                                 <Grid item xs={4} sm={4} md={4} lg={4}>
                                                     <div style={{ marginLeft: '20px'}}><StyledText>Name</StyledText></div>
                                                 </Grid>
-                                                <Grid item xs={8} sm={8} md={8} lg={8}>
+                                                <Grid item xs={7} sm={7} md={7} lg={7}>
                                                     <h3 style={{ marginLeft: '50px'}}>{cart.name}</h3>
+                                                </Grid>
+                                                <Grid item xs={1} sm={1} md={1} lg={1}>
+                                                    <div onClick={() => {
+                                                        axios.delete(`/api/shopping_cart/${cart.cart_id}`, {
+                                                            headers: { 'Authorization' : 'Bearer '+ user.access_token}
+                                                        })
+                                                        .then(response => {
+                                                            let cartsAfterDelete= carts.filter(function(item) {
+                                                                return item.cart_id != cart.cart_id
+                                                            })
+                                                            setCarts(cartsAfterDelete);
+                                                        })
+                                                        
+                                                    }} >
+                                                        <StyledDelete>
+                                                            <DeleteForeverIcon />
+                                                        </StyledDelete>
+                                                    </div>
+                                                    
                                                 </Grid>
                                             </Grid>
                                                 <hr></hr>
@@ -234,6 +265,8 @@ const MyShoppingCart = () => {
                                                     <h4 style={{ marginLeft: '50px'}}>{cart.weight} gram</h4>
                                                 </Grid>
                                             </Grid>
+                                            <hr></hr>
+                                            
                                             </div>
                                             
                                         </Grid>

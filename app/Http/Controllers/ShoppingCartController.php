@@ -63,13 +63,13 @@ class ShoppingCartController extends Controller
         
     }
 
-    public function delete($id){
-        $cart = ShoppingCart::where('id', $id)->first();
+    public function delete($cart_id){
+        $cart = ShoppingCart::where('id', $cart_id)->first();
         $product = Products::find($cart->product_id);
         $product->quantity += $cart->quantity;
         $product->save();
 
-        ShoppingCart::where('id', $id)->delete();
-        return redirect()->back();
+        ShoppingCart::where('id', $cart_id)->delete();
+        return response()->json(204);
     }
 }
