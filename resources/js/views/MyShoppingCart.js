@@ -86,10 +86,21 @@ const MyShoppingCart = () => {
     const classes = useStyles();
     const [courier, setCourier] = useState('jne');
     const [weight, setWeight] = useState(0);
-    const [cityId, setCityId] = useState(0)
+    const [cityId, setCityId] = useState(0);
+    const [costs, setCosts] = useState([]);
 
     const handleChange = (event) => {
         setCourier(event.target.value);
+        axios.post(`/api/check_ongkir`, {
+            headers: { 'Authorization' : 'Bearer '+ user.access_token},
+            city_destination: cityId,
+            courier: event.target.value,
+            weight: weight
+        })
+        .then(response => {
+            console.log(response.data[0].costs);
+            setCosts(response.data[0].costs);
+        })
     };
 
     const handleOpen = () => {
@@ -109,7 +120,7 @@ const MyShoppingCart = () => {
         })
         .then(response => {
             
-            console.log(response.data[0])
+            console.log(response.data)
         })
     }
 
@@ -124,7 +135,7 @@ const MyShoppingCart = () => {
         let state = localStorage["appState"];
         
         let AppState = JSON.parse(state);
-
+        
         setUser(AppState.user);
 
         axios.get(`/api/shopping_cart/${AppState.user.id}`, {
@@ -146,10 +157,20 @@ const MyShoppingCart = () => {
                     setUserAddress(response.data);
                     setAddressId(response.data[0].id);
                     setCityId(response.data[0].user_city_id);
+
+                    axios.post(`/api/check_ongkir`, {
+                        headers: { 'Authorization' : 'Bearer '+ user.access_token},
+                        city_destination: response.data[0].user_city_id,
+                        courier: 'jne',
+                        weight: weightData
+                    })
+                    .then(response => {
+                        console.log(response.data[0].costs);
+                        setCosts(response.data[0].costs);
+                    })
                 })
             }
         });
-
     },[]);
 
     const responsive = {
@@ -355,25 +376,46 @@ const MyShoppingCart = () => {
                             >
                             <MenuItem value="jne">JNE</MenuItem>
                             <MenuItem value="tiki">TIKI</MenuItem>
-                            <MenuItem value="post">POST</MenuItem>
+                            <MenuItem value="pos">POS</MenuItem>
                             </Select>
                         </FormControl>
                         </Grid>
-                        <Grid item xs={9} sm={9} lg={9} md={9}>
-                            <br />
-                            <a style={{color: '#17172b', cursor: 'pointer'}} onClick={handleOnCheck}><h4>Check</h4></a>
-                        </Grid>
                     </Grid>
-                    
-                    {/* <div style={{ backgroundColor: ' #17172b', padding: '2px' }}>
-                        <center>
-                            <h3 style={{ color: 'grey' }}>
-                                <a style={{ color: 'grey', cursor: 'pointer' }} href="#">Buy <LocalMallIcon /> </a> 
-                                    or 
-                                <a style={{ color: 'grey' }} href="#" > Remove</a>
-                            </h3>
-                        </center>
-                    </div> */}
+
+                    <Grid>
+                        {
+                            costs.map((c, key )=> {
+                                return(
+                                    <div key={key} style={{ marginTop: '5px'}}>
+                                        <Card style={{ padding: '10px' }} key={key}>
+                                            <Grid container>
+                                                <Grid item xs={12} sm={12} lg={3} md={3}>
+                                                    {c.service} | {c.description}
+                                                </Grid>
+                                                <Grid item xs={12} sm={12} lg={1} md={1}>
+                                                    {c.cost[0].etd}
+                                                    {
+                                                        courier == 'jne' &&
+                                                        <span> Day</span>
+                                                    }
+
+                                                    {
+                                                        courier == 'tiki' &&
+                                                        <span> Day</span>
+                                                    }
+                                                </Grid>
+                                                <Grid item xs={12} sm={12} lg={3} md={3}>
+                                                    {currencyFormatter(c.cost[0].value)}
+                                                </Grid>
+                                            </Grid>
+                                        </Card>
+                                    </div>
+                                )
+                            })
+                        }
+                    </Grid>
+                    <br />
+                    <br />
                 </StyledCart>
             </div>
             <Modal
