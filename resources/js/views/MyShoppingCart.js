@@ -60,6 +60,11 @@ const StyledDelete = styled.div`
     }
 `;
 
+const StyledTotal = styled.div`
+    color: #17172b;
+    margin-top: 20px;
+`;
+
 const useStyles = makeStyles(theme =>({
     root: {
       maxWidth: 345,
@@ -88,8 +93,12 @@ const MyShoppingCart = () => {
     const [weight, setWeight] = useState(0);
     const [cityId, setCityId] = useState(0);
     const [costs, setCosts] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [courierSelected, setCourierSelected] = useState('');
+    const [courierPrice, setCourierPrice] = useState(0);
 
     const handleChange = (event) => {
+
         setCourier(event.target.value);
         axios.post(`/api/check_ongkir`, {
             headers: { 'Authorization' : 'Bearer '+ user.access_token},
@@ -99,6 +108,12 @@ const MyShoppingCart = () => {
         })
         .then(response => {
             console.log(response.data[0].costs);
+            let totalPriceData = 0;
+            carts.map(data => {
+                totalPriceData += data.price * data.quantity;
+            })
+            
+            setTotalPrice(totalPriceData);
             setCosts(response.data[0].costs);
         })
     };
@@ -145,10 +160,13 @@ const MyShoppingCart = () => {
             setCarts(cartData);
 
             let weightData = 0;
+            let totalPriceData = 0;
             cartData.map(data => {
                 weightData += data.weight;
+                totalPriceData += data.price * data.quantity;
             })
 
+            setTotalPrice(totalPriceData)
             setWeight(weightData);
 
             if(cartData.length > 0){
@@ -248,6 +266,9 @@ const MyShoppingCart = () => {
                                                             let cartsAfterDelete= carts.filter(function(item) {
                                                                 return item.cart_id != cart.cart_id
                                                             })
+
+                                                            let totalPriceAfterDelete = totalPrice - cart.price * cart.quantity;
+                                                            setTotalPrice(totalPriceAfterDelete);
                                                             setCarts(cartsAfterDelete);
                                                         })
                                                         
@@ -297,7 +318,7 @@ const MyShoppingCart = () => {
                             )
                         })
                     }
-                    <div style={{ backgroundColor: ' #17172b', padding: '2px' }}>
+                    <div style={{ backgroundColor: '#17172b', padding: '2px' }}>
                         <center>
                             <h3 style={{ color: 'grey', marginTop: '10px' }}>
                                 <a style={{ color: 'grey', cursor: 'pointer' }} onClick={handleOpen}><AddIcon /> Add A Destination Address</a> 
@@ -312,6 +333,16 @@ const MyShoppingCart = () => {
                                          <Card style={{ padding: '10px' }} onClick={() => {
                                         setAddressId(list.id);
                                         setCityId(list.user_city_id);
+                                        axios.post(`/api/check_ongkir`, {
+                                            headers: { 'Authorization' : 'Bearer '+ user.access_token},
+                                            city_destination: list.user_city_id,
+                                            courier: courier,
+                                            weight: weight
+                                        })
+                                        .then(response => {
+                                            console.log(response.data[0].costs);
+                                            setCosts(response.data[0].costs);
+                                        })
                                     }}>
                                         <SetyledAddress >
                                         <Grid container>
@@ -386,7 +417,20 @@ const MyShoppingCart = () => {
                         {
                             costs.map((c, key )=> {
                                 return(
-                                    <div key={key} style={{ marginTop: '5px'}}>
+                                    <div key={key} style={{ marginTop: '5px'}} onClick={()=>{
+                                        
+                                        if(courierSelected !== `${c.service} | ${c.description}`){
+                                            let totalPriceAfterSetCourier = totalPrice - courierPrice + c.cost[0].value;
+                                            setTotalPrice(totalPriceAfterSetCourier);
+                                            setCourierPrice(c.cost[0].value)
+                                            
+                                        }else{
+                                            return;
+                                        }
+
+                                        setCourierSelected(`${c.service} | ${c.description}`)
+                                        
+                                    }}>
                                         <Card style={{ padding: '10px' }} key={key}>
                                             <Grid container>
                                                 <Grid item xs={12} sm={12} lg={3} md={3}>
@@ -413,6 +457,14 @@ const MyShoppingCart = () => {
                                 )
                             })
                         }
+                    </Grid>
+
+                    <Grid container>
+                        <Grid item>
+                            <StyledTotal>
+                                <h3>Total : {currencyFormatter(totalPrice)}</h3>
+                            </StyledTotal>
+                        </Grid>
                     </Grid>
                     <br />
                     <br />
