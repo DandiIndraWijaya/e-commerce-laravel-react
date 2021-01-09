@@ -60,6 +60,14 @@ const StyledDelete = styled.div`
     }
 `;
 
+const StyledCourier = styled.div`
+
+    &:hover{
+        cursor: pointer;
+        text-decoration: underline;
+    }
+`;
+
 const StyledTotal = styled.div`
     color: #17172b;
     margin-top: 20px;
@@ -340,8 +348,10 @@ const MyShoppingCart = () => {
                                             weight: weight
                                         })
                                         .then(response => {
-                                            console.log(response.data[0].costs);
                                             setCosts(response.data[0].costs);
+                                            setTotalPrice(totalPrice - courierPrice);
+                                            setCourierPrice(0);
+                                            setCourierSelected('');
                                         })
                                     }}>
                                         <SetyledAddress >
@@ -417,7 +427,7 @@ const MyShoppingCart = () => {
                         {
                             costs.map((c, key )=> {
                                 return(
-                                    <div key={key} style={{ marginTop: '5px'}} onClick={()=>{
+                                    <StyledCourier key={key} style={{ marginTop: '5px'}} onClick={()=>{
                                         
                                         if(courierSelected !== `${c.service} | ${c.description}`){
                                             let totalPriceAfterSetCourier = totalPrice - courierPrice + c.cost[0].value;
@@ -433,10 +443,10 @@ const MyShoppingCart = () => {
                                     }}>
                                         <Card style={{ padding: '10px' }} key={key}>
                                             <Grid container>
-                                                <Grid item xs={12} sm={12} lg={3} md={3}>
+                                                <Grid item xs={11} sm={11} lg={3} md={3}>
                                                     {c.service} | {c.description}
                                                 </Grid>
-                                                <Grid item xs={12} sm={12} lg={1} md={1}>
+                                                <Grid item xs={11} sm={11} lg={1} md={1}>
                                                     {c.cost[0].etd}
                                                     {
                                                         courier == 'jne' &&
@@ -448,12 +458,20 @@ const MyShoppingCart = () => {
                                                         <span> Day</span>
                                                     }
                                                 </Grid>
-                                                <Grid item xs={12} sm={12} lg={3} md={3}>
+                                                <Grid item xs={11} sm={11} lg={3} md={3}>
                                                     {currencyFormatter(c.cost[0].value)}
                                                 </Grid>
+                                                <Grid item xs={1} sm={1} lg={1} md={1}>
+                                                {
+                                                    courierSelected === `${c.service} | ${c.description}` &&
+                                                    <center><CheckCircleIcon /></center>
+                                                    ||
+                                                    <center><CheckBoxOutlineBlankIcon /></center>
+                                                }
+                                                </Grid> 
                                             </Grid>
                                         </Card>
-                                    </div>
+                                    </StyledCourier>
                                 )
                             })
                         }
