@@ -19,7 +19,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
-import AddAddress from './AddAddress'
+import AddAddress from './AddAddress';
+import Pay from './Pay';
 import Navbar from '../components/Navigation/navbar';
 
 const StyledCarousel = styled.div`
@@ -94,6 +95,7 @@ const MyShoppingCart = () => {
     const [carts, setCarts] = useState([]);
     const [user, setUser] = useState({});
     const [open, setOpen] = useState(false);
+    const [openPay, setOpenPay] = useState(false);
     const [userAddress, setUserAddress] = useState([]);
     const [addressId, setAddressId] = useState(0);
     const classes = useStyles();
@@ -133,6 +135,14 @@ const MyShoppingCart = () => {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const handleOpenPay = () => {
+        setOpenPay(true)
+    }
+
+    const handleClosePay = () => {
+        setOpenPay(false);
+    }
 
     const handleOnCheck = () => {
         axios.post(`/api/check_ongkir`, {
@@ -484,6 +494,8 @@ const MyShoppingCart = () => {
                             </StyledTotal>
                         </Grid>
                     </Grid>
+                    <button onClick={handleOpenPay}>Pay</button>
+                    
                     <br />
                     <br />
                 </StyledCart>
@@ -493,7 +505,7 @@ const MyShoppingCart = () => {
             aria-describedby="transition-modal-description"
             className={classes.modal}
             open={open}
-            onClose={handleClose}
+            onClose={handleClosePay}
             closeAfterTransition
             BackdropComponent={Backdrop}
             BackdropProps={{
@@ -503,6 +515,25 @@ const MyShoppingCart = () => {
             <Fade in={open}>
                 <div className={classes.paper}>
                 <AddAddress />
+                </div>
+            </Fade>
+            </Modal>
+
+            <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={openPay}
+            onClose={handleClosePay}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+                timeout: 500,
+            }}
+            >
+            <Fade in={openPay}>
+                <div className={classes.paper}>
+                <Pay totalPrice={totalPrice} />
                 </div>
             </Fade>
             </Modal>

@@ -30,7 +30,8 @@
 </head>
 <body>
     <div id="index"></div>
- 
+    
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
