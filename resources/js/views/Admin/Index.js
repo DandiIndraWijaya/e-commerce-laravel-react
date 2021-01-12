@@ -22,8 +22,16 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { TextField } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import UpdateIcon from '@material-ui/icons/Update';
+import Grid from '@material-ui/core/Grid';
+import DetailsIcon from '@material-ui/icons/Details';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
 
 import AdminTemplate from '../../template/Admin';
+import ProductDetailsModal from './Modals/Details/Product';
+
 
 function createData(name, price, description) {
   return { name, price, description };
@@ -126,12 +134,12 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          color: theme.palette.primary.main,
+          backgroundColor: lighten(theme.palette.primary.light, 0.85),
         }
       : {
           color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
+          backgroundColor: theme.palette.primary.dark,
         },
   title: {
     flex: '1 1 100%',
@@ -159,19 +167,38 @@ const EnhancedTableToolbar = (props) => {
         
       )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      
+        <Grid container>
+        {numSelected > 0 && 
+            <Grid item>
+                <Tooltip title="Delete">
+                    <IconButton aria-label="delete">
+                        <DeleteIcon />
+                    </IconButton>
+                </Tooltip>
+            </Grid>
+        }
+        {
+            numSelected == 1 &&
+            <Grid item>
+                <Tooltip title="Update">
+                    <IconButton aria-label="update">
+                        <UpdateIcon />
+                    </IconButton>
+                </Tooltip>
+            </Grid>
+        }
+        {
+            numSelected == 1 &&
+            <Grid item>
+                <Tooltip title="Details">
+                    <IconButton aria-label="details">
+                        <DetailsIcon />
+                    </IconButton>
+                </Tooltip>
+            </Grid>
+        }
+        </Grid>
     </Toolbar>
   );
 };
@@ -388,6 +415,24 @@ export default function EnhancedTable() {
         label="Dense padding"
       />
     </div>
+        <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={openDetails}
+            onClose={handleCloseDetails}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+                timeout: 500,
+            }}
+            >
+            <Fade in={openDetails}>
+                <div className={classes.paper}>
+                <Pay totalPrice={totalPrice} />
+                </div>
+            </Fade>
+        </Modal>
     </AdminTemplate>
     
   );
