@@ -7,9 +7,10 @@ import Products from './views/Products';
 import Register from './views/Register/Register';
 import ProductDetail from './views/productDetail';
 import MyShoppingCart from './views/MyShoppingCart';
+import AdminIndex from './views/Admin/Index';
 
 // import NotFound from './views/NotFound/NotFound'
-// User is LoggedIn
+
 import PrivateRoute from './PrivateRoute'
 import Dashboard from './views/user/Dashboard/Dashboard';
 const Main = props => (
@@ -27,6 +28,9 @@ const Main = props => (
 
   <Route path='/products/:category' component={Products}/>
   <Route path='/product/:productName' component={ProductDetail} />
+
+  
+  <Route path='/admin' component={AdminIndex} />
 </Switch>
 );
 export default Main;

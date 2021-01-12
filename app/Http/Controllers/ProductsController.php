@@ -10,6 +10,12 @@ use Illuminate\Http\Request;
 
 class ProductsController extends Controller
 {
+    public function index(){
+        $products = Products::select('id', 'name', 'description', 'price')->get();
+
+        return response()->json($products, 201);
+    }
+
     public function show($category){
         $category_result = Category::where('category_name', $category)->first();
         $products = Products::where('category', $category_result->id)->get();
@@ -37,5 +43,10 @@ class ProductsController extends Controller
         $product->image = $im;
         return response()->json($product, 201);
 
+    }
+
+    public function search_product($product_name){
+        $products = Products::select('id', 'name', 'description', 'price')->where('name', 'like', '%' . $product_name . '%')->get();
+        return response()->json($products, 201);
     }
 }
