@@ -26,15 +26,47 @@ const AddProduct = () => {
     const [images, setImages] = useState([]);
     const [productName, setProductName] = useState('');
     const [price, setPrice] = useState(0);
+    const [description, setDescription] = useState('');
     
     const fileSelectedHandler = (e) => {
-        setImages(e.target.files)
+        // setImages(e.target.files)
+        let imagesArray = [];
+
+        for( let i = 0 ; i < e.target.files.length ; i++){
+            let fileReader = new FileReader();
+            fileReader.readAsDataURL(e.target.files[i]);
+            fileReader.onload = (e) => {
+                imagesArray.push(e.target.result);
+                setImages(imagesArray)
+            }
+        }
     }
 
     const handleOnSubmit = () => {
-        console.log(productName);
-        console.log(price);
-        console.log(images);
+        // console.log(productName);
+        // console.log(price);
+        // console.log(images);
+        // console.log(description);
+
+        const fd = new FormData();
+
+        for(let i=0 ; i<images.length ; i++){
+            fd.append(`images[]`, images[i]);
+        }
+        
+        fd.append('product_name', productName);
+        fd.append('price', price);
+        fd.append('description', description);
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        }
+
+        axios.post('/api/product', fd, config)
+        .then(response => {
+            console.log('s', response);
+        })
     }
 
     return (
@@ -74,7 +106,7 @@ const AddProduct = () => {
 
                             onChange={ ( event, editor ) => {
                                 const data = editor.getData();
-                                console.log( data );
+                                setDescription(data);
                             } }
                         />
                         </form>

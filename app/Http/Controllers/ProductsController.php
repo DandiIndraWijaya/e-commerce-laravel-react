@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use App\Models\ProductImage;
 use App\Models\Products;
 use App\Models\Category;
@@ -14,6 +15,27 @@ class ProductsController extends Controller
         $products = Products::select('id', 'name', 'description', 'price')->get();
 
         return response()->json($products, 201);
+    }
+
+    public function add_product(Request $request){
+        foreach($request->images as $image){
+            $explode = explode(',', $image);
+            $decode = base64_decode($explode[1]);
+
+            if(str_contains($explode[0], 'jpeg')){
+                $extentsion = 'jpg';
+            }else{
+                $extentsion = 'png';
+            }
+
+            $str_random = Str::random(10);
+            $fileName = $str_random.'.'.$extentsion;
+
+            $path = public_path().'/'.$fileName;
+
+            file_put_contents($path, $decode);
+        }
+        return response()->json($request->images, 201);
     }
 
     public function show($category){

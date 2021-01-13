@@ -40,6 +40,7 @@ Route::get('/products', 'App\Http\Controllers\ProductsController@index');
 Route::get('/products/category/{category}', 'App\Http\Controllers\ProductsController@show');
 Route::get('/product/{product_name}', 'App\Http\Controllers\ProductsController@product');
 Route::get('/product/search/{product_name}', 'App\Http\Controllers\ProductsController@search_product');
+Route::post('/product', 'App\Http\Controllers\ProductsController@add_product');
 
 Route::post('/shopping_cart', 'App\Http\Controllers\ShoppingCartController@store');
 Route::get('/shopping_cart/{user_email}', 'App\Http\Controllers\ShoppingCartController@get');
