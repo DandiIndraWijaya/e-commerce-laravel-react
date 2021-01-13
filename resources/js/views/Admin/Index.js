@@ -28,9 +28,11 @@ import DetailsIcon from '@material-ui/icons/Details';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import Button from '@material-ui/core/Button';
 
 import AdminTemplate from '../../template/Admin';
 import ProductDetailsModal from './Modals/Details/Product';
+import AddProduct from './Modals/Add/AddProduct';
 
 
 function createData(name, price, description) {
@@ -146,9 +148,80 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+  },
+  paper: {
+    width: '100%',
+    marginBottom: theme.spacing(2),
+  },
+  table: {
+    minWidth: 750,
+  },
+  visuallyHidden: {
+    border: 0,
+    clip: 'rect(0 0 0 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    top: 20,
+    width: 1,
+  },
+  modalStyle1:{
+    position:'absolute',
+    top:'10%',
+    left:'10%',
+    overflow:'scroll',
+    height:'100%',
+    display:'block'
+  }
+}));
+
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
+  const { selected } = props;
+  const [openDetails, setOpenDetail] = React.useState(false);
+  const [openAdd, setOpenAdd] = React.useState(false);
+
+  const handleCloseAdd = () => {
+    setOpenAdd(false)
+  }
+
+  const handleOpenAdd = () => {
+    setOpenAdd(true);
+  }
+
+  const handleCloseDetails = () => {
+    setOpenDetail(false)
+  }
+
+  const handleOpenDetails = () => {
+    setOpenDetail(true);
+  }
+  
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      width: '100%',
+    },
+    paper: {
+      width: '100%',
+      marginBottom: theme.spacing(2),
+    },
+    modalStyle1:{
+      position:'relative',
+      top:'5%',
+      width: '90%',
+      overflow:'scroll',
+      height:'100%',
+      display:'block',
+    }
+  }));
+  
+  const classes2 = useStyles()
 
   return (
     <Toolbar
@@ -161,10 +234,15 @@ const EnhancedTableToolbar = (props) => {
           {numSelected} selected
         </Typography>
       ) : (
-        <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+        <div>
+          <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
           Products
         </Typography>
-        
+        <br />
+        <Button onClick={handleOpenAdd} variant="contained">
+          New
+        </Button>
+        </div>
       )}
 
       
@@ -192,44 +270,60 @@ const EnhancedTableToolbar = (props) => {
             numSelected == 1 &&
             <Grid item>
                 <Tooltip title="Details">
-                    <IconButton aria-label="details">
-                        <DetailsIcon />
+                    <IconButton aria-label="details" onClick={handleOpenDetails}>
+                        <DetailsIcon  />
                     </IconButton>
                 </Tooltip>
             </Grid>
         }
         </Grid>
+        <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={openDetails}
+            onClose={handleCloseDetails}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+                timeout: 500,
+            }}
+            >
+            <Fade in={openDetails}>
+                <div className={classes2.modalStyle1}>
+                  <ProductDetailsModal productSelected={selected[selected.length - 1]} />
+                </div>
+            </Fade>
+        </Modal>
+
+        <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.modal}
+            open={openAdd}
+            onClose={handleCloseAdd}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+                timeout: 500,
+            }}
+            >
+            <Fade in={openAdd}>
+                <div className={classes2.modalStyle1}>
+                  <AddProduct />
+                </div>
+            </Fade>
+        </Modal>
     </Toolbar>
   );
+
 };
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-  },
-  paper: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  },
-  table: {
-    minWidth: 750,
-  },
-  visuallyHidden: {
-    border: 0,
-    clip: 'rect(0 0 0 0)',
-    height: 1,
-    margin: -1,
-    overflow: 'hidden',
-    padding: 0,
-    position: 'absolute',
-    top: 20,
-    width: 1,
-  },
-}));
+
 
 export default function EnhancedTable() {
   const classes = useStyles();
@@ -242,6 +336,7 @@ export default function EnhancedTable() {
   const [rows, setRows] = React.useState([]);
   const [change, setChange] = React.useState(false);
   const [search, setSearch] = React.useState('');
+  
 
   const getAllProducts = () => {
     axios.get('/api/products')
@@ -274,6 +369,8 @@ export default function EnhancedTable() {
     }
     setSelected([]);
   };
+
+
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
@@ -338,7 +435,7 @@ export default function EnhancedTable() {
     <div className={classes.root}>
     
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} selected={selected}  />
         <TableContainer>
         <TextField style={{ margin: '10px' }} id="search_product" type="text" placeholder="Search Product" onChange={handleOnChangeSearch} />
         {
@@ -415,24 +512,6 @@ export default function EnhancedTable() {
         label="Dense padding"
       />
     </div>
-        <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            className={classes.modal}
-            open={openDetails}
-            onClose={handleCloseDetails}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-                timeout: 500,
-            }}
-            >
-            <Fade in={openDetails}>
-                <div className={classes.paper}>
-                <Pay totalPrice={totalPrice} />
-                </div>
-            </Fade>
-        </Modal>
     </AdminTemplate>
     
   );

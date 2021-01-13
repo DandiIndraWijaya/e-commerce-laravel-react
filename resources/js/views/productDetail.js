@@ -271,20 +271,13 @@ const ProductDetail = () => {
                                             }
                                             
                                             </div>
-                                            
-
-                                            
                                         </div>
-                                        
                                         </div>
                                     </div>
                                     
                                 </Grid>
                             </Grid>
                             <hr></hr>
-
-                           
-
                         </Grid>
                         <StyledDetail>
                             <h5>{product.description}</h5>
