@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
-import { TextField } from '@material-ui/core';
+import { TextField, FormLabel, Button  } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { FormLabel } from '@material-ui/core';
 
 const StyledAddProduct = styled.div`
     background-color: white;
@@ -25,9 +24,17 @@ const useStyles = makeStyles({
 const AddProduct = () => {
     const classes = useStyles();
     const [images, setImages] = useState([]);
+    const [productName, setProductName] = useState('');
+    const [price, setPrice] = useState(0);
     
     const fileSelectedHandler = (e) => {
-        setImages(e.targer.files)
+        setImages(e.target.files)
+    }
+
+    const handleOnSubmit = () => {
+        console.log(productName);
+        console.log(price);
+        console.log(images);
     }
 
     return (
@@ -38,9 +45,13 @@ const AddProduct = () => {
                         <h3>Add a Product</h3>
                         <hr />
                         <form >
-                        <TextField type="text" placeholder="Product Name" required />
+                        <TextField type="text" placeholder="Product Name" required onChange={(e) => {
+                            setProductName(e.target.value);
+                        }} />
                         <br />
-                        <TextField className={classes.input} type="number" placeholder="Price" required />
+                        <TextField className={classes.input} type="number" placeholder="Price" required onChange={e => {
+                            setPrice(e.target.value);
+                        }} />
                         <br />
                         <FormLabel className={classes.input}>
                             Images:
@@ -68,6 +79,8 @@ const AddProduct = () => {
                         />
                         </form>
                     </center>
+                    <br />
+                    <Button onClick={handleOnSubmit} variant="contained" color="primary">Save</Button>
                     <br />
                     <br />
                 </StyledAddProduct>
