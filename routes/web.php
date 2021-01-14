@@ -23,6 +23,7 @@ Route::view('/{path?}', 'index');
 
 Route::view('/products/{path?}', 'index');
 Route::view('/product/{path?}', 'index');
+Route::view('/admin/{path?}', 'index');
 
 
 Route::get('/shopping_cart/ongkir', 'App\Http\Controllers\CheckOngkirController@index');

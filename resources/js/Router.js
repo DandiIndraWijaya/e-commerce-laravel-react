@@ -7,8 +7,9 @@ import Products from './views/Products';
 import Register from './views/Register/Register';
 import ProductDetail from './views/productDetail';
 import MyShoppingCart from './views/MyShoppingCart';
-import AdminIndex from './views/Admin/Index';
 
+import AdminProducts from './views/Admin/Index';
+import AdminCategories from './views/Admin/Categories';
 // import NotFound from './views/NotFound/NotFound'
 
 import PrivateRoute from './PrivateRoute'
@@ -17,20 +18,21 @@ const Main = props => (
 <Switch>
   {/*User might LogIn*/}
   <Route exact path='/' component={Home}/>
+  
   {/*User will LogIn*/}
   <Route path='/login' component={Login}/>
   <Route path='/register' component={Register}/>
+
   {/* User is LoggedIn*/}
   <PrivateRoute path='/dashboard' component={Dashboard}/>
   <PrivateRoute path='/my_shopping_cart' component={MyShoppingCart} />
-  {/*Page Not Found*/}
-  {/* <Route component={NotFound}/> */}
 
   <Route path='/products/:category' component={Products}/>
   <Route path='/product/:productName' component={ProductDetail} />
 
   
-  <Route path='/admin' component={AdminIndex} />
+  <Route exact path='/admin' component={AdminProducts} />
+  <Route exact path='/admin/categories' component={AdminCategories} />
 </Switch>
 );
 export default Main;

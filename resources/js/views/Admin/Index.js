@@ -29,6 +29,7 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
+import { withRouter } from 'react-router-dom';
 
 import AdminTemplate from '../../template/Admin';
 import ProductDetailsModal from './Modals/Details/Product';
@@ -325,7 +326,7 @@ EnhancedTableToolbar.propTypes = {
 
 
 
-export default function EnhancedTable() {
+export default withRouter(function AdminProducts() {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -515,4 +516,4 @@ export default function EnhancedTable() {
     </AdminTemplate>
     
   );
-}
+})

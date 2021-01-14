@@ -42,6 +42,9 @@
         "react-multi-carousel": "^2.5.5",
         "react-numeric-input": "^2.2.3",
         "react-router-dom": "^5.2.0",
+        "react-tag-input": "^6.5.2",
+        "react-tagsinput": "^3.19.0",
+        "reactjs-tag-input": "^2.0.15",
         "styled-components": "^5.2.0",
         "styled-media-query": "^2.1.2"
     }
