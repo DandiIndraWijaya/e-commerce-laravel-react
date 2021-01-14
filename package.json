@@ -33,6 +33,7 @@
         "@material-ui/data-grid": "^4.0.0-alpha.15",
         "@material-ui/icons": "^4.9.1",
         "clsx": "^1.1.1",
+        "dotenv": "^8.2.0",
         "emotion": "^10.0.27",
         "react-bootstrap": "^1.4.3",
         "react-flash-message": "^1.0.5",

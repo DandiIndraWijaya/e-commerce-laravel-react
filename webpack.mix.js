@@ -1,5 +1,6 @@
 const mix = require('laravel-mix');
-
+require('dotenv').config();
+let webpack = require('webpack')
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -11,11 +12,21 @@ const mix = require('laravel-mix');
  |
  */
 
+let dotenvplugin = new webpack.DefinePlugin({
+    'process.env': {
+        APP_NAME: JSON.stringify(process.env.APP_NAME || 'Default app name'),
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
+    }
+})
+
 mix.react('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css');
 
 mix.webpackConfig({
     watchOptions: {
         ignored: /node_modules/
-    }
+    },
+    plugins: [
+        dotenvplugin,
+    ]
 });

@@ -22,6 +22,7 @@ const useStyles = makeStyles({
 })
 
 const AddProduct = () => {
+    
     const classes = useStyles();
     const [images, setImages] = useState([]);
     const [productName, setProductName] = useState('');
@@ -102,8 +103,7 @@ const AddProduct = () => {
                             config={{
                                 removePlugins: ['Image', 'ImageCaption', 'ImageStyle', 'ImageToolbar', 'ImageUpload', 'MediaEmbed']
                               }}
-                            data="<p>Hello from CKEditor 5!</p>"
-
+                              
                             onChange={ ( event, editor ) => {
                                 const data = editor.getData();
                                 setDescription(data);
