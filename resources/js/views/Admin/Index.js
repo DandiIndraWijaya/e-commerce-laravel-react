@@ -29,11 +29,13 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
-import { withRouter } from 'react-router-dom';
+import { withRouter, useHistory } from 'react-router-dom';
 
 import AdminTemplate from '../../template/Admin';
 import ProductDetailsModal from './Modals/Details/Product';
 import AddProduct from './Modals/Add/AddProduct';
+
+
 
 
 function createData(name, price, description) {
@@ -73,8 +75,8 @@ function stableSort(array, comparator) {
 const headCells = [
   { id: 'id', numeric: true, disablePdding: false, label: 'No' },
   { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-  { id: 'price', numeric: true, disablePadding: false, label: 'Price' },
-  { id: 'description', numeric: false, disablePadding: false, label: 'Description' },
+  { id: 'price', numeric: true, disablePadding: false, label: 'Price' }
+  // { id: 'description', numeric: false, disablePadding: false, label: 'Description' },
 ];
 
 function EnhancedTableHead(props) {
@@ -188,8 +190,11 @@ const EnhancedTableToolbar = (props) => {
   const [openDetails, setOpenDetail] = React.useState(false);
   const [openAdd, setOpenAdd] = React.useState(false);
 
+  let history = useHistory();
+
   const handleCloseAdd = () => {
-    setOpenAdd(false)
+    setOpenAdd(false);
+    history.push('/admin');
   }
 
   const handleOpenAdd = () => {
@@ -202,6 +207,16 @@ const EnhancedTableToolbar = (props) => {
 
   const handleOpenDetails = () => {
     setOpenDetail(true);
+  }
+
+  const handleDelete = () => {
+    let stringSelected = selected.toString();
+
+    axios.delete(`/api/product/${stringSelected}`)
+    .then(response => {
+
+      location.reload()
+    })
   }
   
   const useStyles = makeStyles((theme) => ({
@@ -251,7 +266,7 @@ const EnhancedTableToolbar = (props) => {
         {numSelected > 0 && 
             <Grid item>
                 <Tooltip title="Delete">
-                    <IconButton aria-label="delete">
+                    <IconButton aria-label="delete" onClick={handleDelete}>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
@@ -486,7 +501,7 @@ export default withRouter(function AdminProducts() {
                         {row.name}
                       </TableCell>
                       <TableCell>{row.price}</TableCell>
-                      <TableCell>{row.description}</TableCell>
+                      {/* <TableCell>{row.description}</TableCell> */}
                     </TableRow>
                   );
                 })}

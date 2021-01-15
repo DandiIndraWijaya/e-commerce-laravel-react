@@ -41,6 +41,7 @@ Route::get('/products/category/{category}', 'App\Http\Controllers\ProductsContro
 Route::get('/product/{product_name}', 'App\Http\Controllers\ProductsController@product');
 Route::get('/product/search/{product_name}', 'App\Http\Controllers\ProductsController@search_product');
 Route::post('/product', 'App\Http\Controllers\ProductsController@add_product');
+Route::delete('/product/{selected}', 'App\Http\Controllers\ProductsController@delete_product');
 
 Route::get('/category', 'App\Http\Controllers\CategoryController@index');
 Route::post('/category', 'App\Http\Controllers\CategoryController@add_category');

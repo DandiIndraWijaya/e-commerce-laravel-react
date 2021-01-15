@@ -7,6 +7,7 @@ use App\Models\ProductImage;
 use App\Models\Products;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use File; 
 // use Illuminate\Support\Facades\DB;
 
 class ProductsController extends Controller
@@ -19,11 +20,15 @@ class ProductsController extends Controller
 
     public function add_product(Request $request){
         $price = (int)$request->price;
+        $category_id = (int)$request->category_id;
+        $subcategory_id = (int)$request->subcategory_id;
 
         $product = Products::create([
             'name' => $request->product_name,
             'price' => $price,
-            'description' => $request->description
+            'description' => $request->description,
+            'category_id' => $category_id,
+            'subcategory_id' => $subcategory_id
         ]);
 
         $get_product = Products::where('name', $request->product_name)->first();
@@ -85,6 +90,31 @@ class ProductsController extends Controller
         $product->image = $im;
         return response()->json($product, 201);
 
+    }
+
+    public function delete_product($selected){
+        $selected_array = explode(',', $selected);
+        foreach($selected_array as $name){
+            $get_product = Products::where('name', $name)->first();
+
+            $product_images = ProductImage::where('product_id', $get_product->id)->get();
+
+            foreach($product_images as $product_image){
+                $file = substr($product_image->image, 1);
+                $file_path = $file;
+                if(File::exists($file_path)){
+                    File::delete($file_path);
+                }
+            }
+
+            ProductImage::where('product_id', $get_product->id)->delete();
+
+            Products::where('name', $name)->delete();
+        }
+
+        
+
+        return response()->json($selected_array, 201);
     }
 
     public function search_product($product_name){

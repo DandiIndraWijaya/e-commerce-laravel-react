@@ -5,6 +5,29 @@ import { TextField, FormLabel, Button  } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Alert from '@material-ui/lab/Alert';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        minWidth: 400
+    },
+    input: {
+        marginTop: 20
+    },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
+
 
 const StyledAddProduct = styled.div`
     background-color: white;
@@ -12,14 +35,6 @@ const StyledAddProduct = styled.div`
     width: 100%;
 `;
 
-const useStyles = makeStyles({
-    root: {
-        minWidth: 400
-    },
-    input: {
-        marginTop: 20
-    }
-})
 
 const AddProduct = () => {
     
@@ -30,7 +45,10 @@ const AddProduct = () => {
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState([]);
     const [subcategory, setSubcategory] = useState([]);
-    
+    const [categoryId, setCategoryId] = useState(0);
+    const [subcategoryId, setSubcategoryId] = useState(0);
+    const [saved, setSaved] = useState(false);
+
     useEffect(() => {
         axios.get('/api/category')
         .then(response => {
@@ -43,11 +61,16 @@ const AddProduct = () => {
         axios.get(`/api/subcategory/${category_id}`)
         .then(response => {
             setSubcategory(response.data)
-            console.log(response.data)
         })
     }
+
     const handleOnChangeCategory = (e) => {
+        setCategoryId(e.target.value);
         getSubcategory(e.target.value);
+    }
+
+    const handleOnChangeSubcategory = (e) => {
+        setSubcategoryId(e.target.value);
     }
 
     const fileSelectedHandler = (e) => {
@@ -71,6 +94,8 @@ const AddProduct = () => {
             fd.append(`images[]`, images[i]);
         }
         
+        fd.append('category_id', categoryId);
+        fd.append('subcategory_id', subcategoryId);
         fd.append('product_name', productName);
         fd.append('price', price);
         fd.append('description', description);
@@ -82,7 +107,7 @@ const AddProduct = () => {
 
         axios.post('/api/product', fd, config)
         .then(response => {
-            console.log('s', response);
+            setSaved(true)
         })
     }
 
@@ -93,6 +118,7 @@ const AddProduct = () => {
                     <center>
                         <h3>Add a Product</h3>
                         <hr />
+                        
                         <form >
                         <TextField type="text" placeholder="Product Name" required onChange={(e) => {
                             setProductName(e.target.value);
@@ -109,26 +135,42 @@ const AddProduct = () => {
 
 
                         <input type="file" multiple onChange={fileSelectedHandler} />
-                        <br />
 
-                        <select onChange={handleOnChangeCategory}>
+                        <br />
+                        <br />
+                        <FormControl className={classes.formControl}>
+                            <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                            <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            onChange={handleOnChangeCategory}
+                            >
                             {
                                 category.map((c, key) => {
 
-                                    return <option key={key} value={c.id}>{c.category}</option>
+                                    return <MenuItem key={key} value={c.id}>{c.category}</MenuItem>
                                 })
                             }
-                        </select>
+                            </Select>
+                        </FormControl>
+
                         <br />
                         <br />
-                        <select>
+                        <FormControl className={classes.formControl}>
+                            <InputLabel id="demo-simple-select-label">Subcategory</InputLabel>
+                            <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            onChange={handleOnChangeSubcategory}
+                            >
                             {
                                 subcategory.map((c, key) => {
 
-                                    return <option key={key} value={c.id}>{c.subcategory}</option>
+                                    return <MenuItem key={key} value={c.id}>{c.subcategory}</MenuItem>
                                 })
                             }
-                        </select>
+                            </Select>
+                        </FormControl>
                         <br />
 
                         <FormLabel className={classes.input}>
@@ -152,6 +194,9 @@ const AddProduct = () => {
                     </center>
                     <br />
                     <Button onClick={handleOnSubmit} variant="contained" color="primary">Save</Button>
+                    {
+                        saved && <Alert severity="success">This is a success alert — check it out!</Alert>
+                    }
                     <br />
                     <br />
                 </StyledAddProduct>
