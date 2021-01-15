@@ -203,6 +203,16 @@ const EnhancedTableToolbar = (props) => {
   const handleOpenDetails = () => {
     setOpenDetail(true);
   }
+
+  const handleDelete = () => {
+    let stringSelected = selected.toString();
+
+    axios.delete(`/api/category/${stringSelected}`)
+    .then(response => {
+
+      location.reload()
+    })
+  }
   
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -251,7 +261,7 @@ const EnhancedTableToolbar = (props) => {
         {numSelected > 0 && 
             <Grid item>
                 <Tooltip title="Delete">
-                    <IconButton aria-label="delete">
+                    <IconButton aria-label="delete" onClick={handleDelete}>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
@@ -340,21 +350,10 @@ export default withRouter(function AdminCategories() {
   
 
   const getAllProducts = () => {
-    axios.get('/api/categories')
+    axios.get('/api/category')
     .then(response => {
         let data = response.data
-
-        let categories = [];
-
-        data.map(d => {
-          let subcategoryData = d.subcategories.map(s => {
-            return s.subcategory + '  '
-          });
-          categories.push({ id: d.id, name: d.category, description: d.description, subcategory: subcategoryData })
-          setRows(categories);
-        })
-        // setRows(data);
-        console.log(data);
+        setRows(data);
     });
   }
 

@@ -6,8 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { TagInput } from 'reactjs-tag-input';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import TagsInput from 'react-tagsinput'
-import 'react-tagsinput/react-tagsinput.css' 
+import TagsInput from 'react-tagsinput';
+import 'react-tagsinput/react-tagsinput.css';
+
 
 const StyledAddCategory = styled.div`
     background-color: white;
@@ -34,29 +35,15 @@ const AddCategory = () => {
     const [subCategoryName, setSubCategoryName] = useState('');
     const [tags, setTags] = useState([]);
     
-    const fileSelectedHandler = (e) => {
-        // setImages(e.target.files)
-        let imagesArray = [];
-
-        for( let i = 0 ; i < e.target.files.length ; i++){
-            let fileReader = new FileReader();
-            fileReader.readAsDataURL(e.target.files[i]);
-            fileReader.onload = (e) => {
-                imagesArray.push(e.target.result);
-                setImages(imagesArray)
-            }
-        }
-    }
 
     const handleOnSubmit = () => {
         const fd = new FormData();
 
-        for(let i=0 ; i<images.length ; i++){
-            fd.append(`images[]`, images[i]);
+        for(let i=0 ; i<tags.length ; i++){
+            fd.append(`tags[]`, tags[i]);
         }
         
         fd.append('category_name', categoryName);
-        fd.append('price', price);
         fd.append('description', description);
         const config = {
             headers: {
@@ -66,7 +53,7 @@ const AddCategory = () => {
 
         axios.post('/api/category', fd, config)
         .then(response => {
-            console.log('s', response);
+            location.reload();
         })
     }
 
@@ -74,9 +61,6 @@ const AddCategory = () => {
         setTags(tags)
     }
     
-    useEffect(() => {
-        console.log(tags)
-    })
     return (
         <div className="content">
             <div className="container">
@@ -107,7 +91,11 @@ const AddCategory = () => {
                                 setDescription(data);
                             } }
                         />
-                        <TagsInput value={tags} onChange={handleChange} />
+                        <FormLabel className={classes.input}>
+                            Subcategory (Press Enter After Write a Subcategory to Add More):
+                        </FormLabel>
+                        <br />
+                        <TagsInput value={tags} onChange={handleChange} placeholder={"Click Enter to Add New Subcategory"} />
                         </form>
                     </center>
                     <br />
