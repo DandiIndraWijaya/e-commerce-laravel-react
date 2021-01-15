@@ -46,6 +46,8 @@ Route::get('/category', 'App\Http\Controllers\CategoryController@index');
 Route::post('/category', 'App\Http\Controllers\CategoryController@add_category');
 Route::delete('/category/{selected}', 'App\Http\Controllers\CategoryController@delete_category');
 
+Route::get('/subcategory/{id}', 'App\Http\Controllers\SubcategoryController@index');
+
 Route::post('/shopping_cart', 'App\Http\Controllers\ShoppingCartController@store');
 Route::get('/shopping_cart/{user_email}', 'App\Http\Controllers\ShoppingCartController@get');
 

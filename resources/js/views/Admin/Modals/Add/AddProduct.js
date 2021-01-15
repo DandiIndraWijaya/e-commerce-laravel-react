@@ -28,9 +28,29 @@ const AddProduct = () => {
     const [productName, setProductName] = useState('');
     const [price, setPrice] = useState(0);
     const [description, setDescription] = useState('');
+    const [category, setCategory] = useState([]);
+    const [subcategory, setSubcategory] = useState([]);
     
+    useEffect(() => {
+        axios.get('/api/category')
+        .then(response => {
+            setCategory(response.data);
+            getSubcategory(response.data[0].id)
+        })
+    }, [])
+
+    const getSubcategory = (category_id) => {
+        axios.get(`/api/subcategory/${category_id}`)
+        .then(response => {
+            setSubcategory(response.data)
+            console.log(response.data)
+        })
+    }
+    const handleOnChangeCategory = (e) => {
+        getSubcategory(e.target.value);
+    }
+
     const fileSelectedHandler = (e) => {
-        // setImages(e.target.files)
         let imagesArray = [];
 
         for( let i = 0 ; i < e.target.files.length ; i++){
@@ -44,10 +64,6 @@ const AddProduct = () => {
     }
 
     const handleOnSubmit = () => {
-        // console.log(productName);
-        // console.log(price);
-        // console.log(images);
-        // console.log(description);
 
         const fd = new FormData();
 
@@ -90,8 +106,31 @@ const AddProduct = () => {
                             Images:
                         </FormLabel>
                         <br />
+
+
                         <input type="file" multiple onChange={fileSelectedHandler} />
                         <br />
+
+                        <select onChange={handleOnChangeCategory}>
+                            {
+                                category.map((c, key) => {
+
+                                    return <option key={key} value={c.id}>{c.category}</option>
+                                })
+                            }
+                        </select>
+                        <br />
+                        <br />
+                        <select>
+                            {
+                                subcategory.map((c, key) => {
+
+                                    return <option key={key} value={c.id}>{c.subcategory}</option>
+                                })
+                            }
+                        </select>
+                        <br />
+
                         <FormLabel className={classes.input}>
                             Description:
                         </FormLabel>
